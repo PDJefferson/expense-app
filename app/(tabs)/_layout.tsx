@@ -1,14 +1,16 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable, useColorScheme } from 'react-native';
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Link, Stack, Tabs, useRouter } from "expo-router";
+import { Pressable, useColorScheme } from "react-native";
 
-import Colors from '../../constants/Colors';
+import Colors from "../../constants/Colors";
+import React from "react";
+import IconButton from "../../components/UI/IconButton";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
+  name: React.ComponentProps<typeof FontAwesome>["name"];
   color: string;
 }) {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
@@ -16,38 +18,48 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const router = useRouter();
 
+  function manageExpensePressHandler(): void {
+    router.push("/expense");
+  }
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-      }}>
+        headerTitle: "Expenses Overview",
+        title: "Tab Layout",
+        headerStyle: {
+          backgroundColor: Colors.primary500,
+        },
+        headerRight: ({ tintColor }) => (
+          <IconButton
+            color={tintColor}
+            icon="add"
+            size={30}
+            onPress={manageExpensePressHandler}
+          />
+        ),
+        headerTintColor: "white",
+        tabBarStyle: { backgroundColor: Colors.primary500 },
+        tabBarActiveTintColor: Colors.accent500,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+          headerTitle: "Recent Expenses",
+          title: "Recent Expenses",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="history" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="allExpenses"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerTitle: "All Expenses",
+          title: "All expenses",
+          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
       />
     </Tabs>
